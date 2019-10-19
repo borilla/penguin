@@ -30,7 +30,7 @@ function generateMaze(sizeX, sizeY, startX = randomInt(sizeX), startY = randomIn
 	iterate(current);
 	return steps;
 }
- 
+
 function randomInt(max) {
 	return Math.floor(Math.random() * max);
 }

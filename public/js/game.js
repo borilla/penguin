@@ -39,21 +39,25 @@ function restartGame() {
 function initializeBlocks() {
 	stationaryBlocks = (new Array(sizeY)).fill(null);
 	stationaryBlocks.forEach((row, index) => {
-		stationaryBlocks[index] = (new Array(sizeX).fill(true))
+		stationaryBlocks[index] = (new Array(sizeX).fill(18))
 	});
 }
 
 function updateBlockContainer() {
 	blockContainer.removeChildren();
-	const blockTexture = textures['block/block.png'];
 
 	for (y = 0; y < sizeY; ++y) {
 		for (x = 0; x < sizeX; ++x) {
-			if (stationaryBlocks[y][x]) {
-				const blockSprite = new PIXI.Sprite(blockTexture);
+			const blockIntegrity = stationaryBlocks[y][x];
+			if (blockIntegrity) {
+				const texture = `block/block-${blockIntegrity >> 1}.png`;
+				const blockSprite = new PIXI.Sprite(textures[texture]);
 				blockSprite.position.x = x * 16;
 				blockSprite.position.y = y * 16;
 				blockContainer.addChild(blockSprite);
+				if (blockIntegrity < 18) {
+					stationaryBlocks[y][x] = blockIntegrity - 1;
+				}
 			}
 		}
 	}
@@ -70,7 +74,7 @@ function initGame() {
 	function doNextStep() {
 		if (currentGridStep < gridSteps.length) {
 			const [x, y] = gridSteps[currentGridStep];
-			stationaryBlocks[y][x] = false;
+			stationaryBlocks[y][x] = 0;
 			updateBlockContainer();
 			++currentGridStep;
 		}
@@ -90,8 +94,10 @@ window.addEventListener('keyup', event => {
 });
 
 function playGame() {
-	if (pressedKeys.has('Space')) {
+	// press 'r' to restart game
+	if (pressedKeys.has('KeyR')) {
 		restartGame();
 	}
+	updateBlockContainer();
 	penguin.update();
 }

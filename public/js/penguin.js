@@ -32,9 +32,54 @@ const penguin = {
 			this.moving = 'none';
 		}
 
+		if (pressedKeys.has('Space')) {
+			if (this._hasBlock(this.facing)) {
+				this._crushBlock(this.facing);
+			}
+		}
+
 		const textureName = `${this.facing}-${(this.sprite.position.x >> 3) % 2 + (this.sprite.position.y >> 3) % 2}`;
 		this.sprite.texture = this.textures[textureName];
 		this._move(this.moving);
+	},
+	_hasBlock: function (direction) {
+		if (!this._canTurnVertical() || !this._canTurnHorizontal()) {
+			return false;
+		}
+		const position = this.sprite.position;
+		const gridX = position.x >> 4; // divide by 16
+		const gridY = position.y >> 4;
+		switch (direction) {
+			case 'up':
+				return gridY > 1 && stationaryBlocks[gridY - 1][gridX] === 18;
+			case 'down':
+				return gridY < sizeY - 2 && stationaryBlocks[gridY + 1][gridX] === 18;
+			case 'left':
+				return gridX > 1 && stationaryBlocks[gridY][gridX - 1] === 18;
+			case 'right':
+				return gridX < sizeX - 2 && stationaryBlocks[gridY][gridX + 1] === 18;
+			default:
+				return false;
+		}
+	},
+	_crushBlock: function(direction) {
+		const position = this.sprite.position;
+		const gridX = position.x >> 4; // divide by 16
+		const gridY = position.y >> 4;
+		switch (direction) {
+			case 'up':
+				stationaryBlocks[gridY - 1][gridX] = 17;
+				break;
+			case 'down':
+				stationaryBlocks[gridY + 1][gridX] = 17;
+				break;
+			case 'left':
+				stationaryBlocks[gridY][gridX - 1] = 17;
+				break;
+			case 'right':
+				stationaryBlocks[gridY][gridX + 1] = 17;
+				break;
+		}
 	},
 	_canTurn: function(direction) {
 		switch (direction) {
