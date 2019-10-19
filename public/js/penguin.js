@@ -2,15 +2,18 @@ const penguin = {
 	textures: {},
 	initTextures: function(textures) {
 		this.textures = {
-			'up': textures['penguin/walk-up-0.png'],
-			'down': textures['penguin/walk-down-0.png'],
-			'left': textures['penguin/walk-left-0.png'],
-			'right': textures['penguin/walk-right-0.png'],
-			'none': textures['penguin/walk-down-1.png']
+			'up-0': textures['penguin/walk-up-0.png'],
+			'up-1': textures['penguin/walk-up-1.png'],
+			'down-0': textures['penguin/walk-down-0.png'],
+			'down-1': textures['penguin/walk-down-1.png'],
+			'left-0': textures['penguin/walk-left-0.png'],
+			'left-1': textures['penguin/walk-left-1.png'],
+			'right-0': textures['penguin/walk-right-0.png'],
+			'right-1': textures['penguin/walk-right-1.png']
 		};
 	},
 	sprite: new PIXI.Sprite(),
-	facing: 'none',
+	facing: 'down',
 	moving: 'none',
 	update: function() {
 		if (pressedKeys.has('ArrowUp') && this._canTurn('up')) {
@@ -29,7 +32,8 @@ const penguin = {
 			this.moving = 'none';
 		}
 
-		this.sprite.texture = this.textures[this.facing];
+		const textureName = `${this.facing}-${(this.sprite.position.x >> 3) % 2 + (this.sprite.position.y >> 3) % 2}`;
+		this.sprite.texture = this.textures[textureName];
 		this._move(this.moving);
 	},
 	_canTurn: function(direction) {
