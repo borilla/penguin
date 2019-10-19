@@ -18,10 +18,10 @@ app.renderer.resize(sizeX * 16, sizeY * 16);
 document.body.appendChild(app.view);
 
 // load images and run the `setup` function when it's done
-PIXI.loader.add('img/sprites.json').load(onAssetsLoaded);
+PIXI.Loader.shared.add('img/sprites.json').load(onAssetsLoaded);
 
 function onAssetsLoaded() {
-	textures = PIXI.loader.resources['img/sprites.json'].textures;
+	textures = PIXI.Loader.shared.resources['img/sprites.json'].textures;
 	penguin.initTextures(textures);
 	app.ticker.add(delta => gameFunction());
 	restartGame();
@@ -30,6 +30,8 @@ function onAssetsLoaded() {
 function restartGame() {
 	pressedKeys.clear();
 	initializeBlocks();
+	penguin.facing = 'down';
+	penguin.moving = 'none'
 	app.stage.addChild(blockContainer);
 	app.stage.addChild(penguin.sprite);
 	updateBlockContainer();
@@ -94,8 +96,8 @@ window.addEventListener('keyup', event => {
 });
 
 function playGame() {
-	// press 'r' to restart game
-	if (pressedKeys.has('KeyR')) {
+	// press 'escape' to restart game
+	if (pressedKeys.has('Escape')) {
 		restartGame();
 	}
 	updateBlockContainer();

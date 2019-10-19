@@ -6,10 +6,10 @@ const penguin = {
 			'up-1': textures['penguin/walk-up-1.png'],
 			'down-0': textures['penguin/walk-down-0.png'],
 			'down-1': textures['penguin/walk-down-1.png'],
-			'left-0': textures['penguin/walk-left-0.png'],
-			'left-1': textures['penguin/walk-left-1.png'],
-			'right-0': textures['penguin/walk-right-0.png'],
-			'right-1': textures['penguin/walk-right-1.png']
+			'left-0': textures['penguin/walk-left-1.png'],
+			'left-1': textures['penguin/walk-left-0.png'],
+			'right-0': textures['penguin/walk-right-1.png'],
+			'right-1': textures['penguin/walk-right-0.png']
 		};
 	},
 	sprite: new PIXI.Sprite(),
@@ -40,48 +40,64 @@ const penguin = {
 
 		const textureName = `${this.facing}-${(this.sprite.position.x >> 3) % 2 + (this.sprite.position.y >> 3) % 2}`;
 		this.sprite.texture = this.textures[textureName];
-		this._move(this.moving);
+
+		if (this._canMove(this.moving)) {
+			this._move(this.moving);
+		}
+		else {
+			this.moving = 'none';
+		}
 	},
 	_hasBlock: function (direction) {
 		if (!this._canTurnVertical() || !this._canTurnHorizontal()) {
 			return false;
 		}
 		const position = this.sprite.position;
-		const gridX = position.x >> 4; // divide by 16
-		const gridY = position.y >> 4;
+		const blockX = position.x >> 4; // divide by 16
+		const blockY = position.y >> 4;
 		switch (direction) {
 			case 'up':
-				return gridY > 1 && stationaryBlocks[gridY - 1][gridX] === 18;
+				return stationaryBlocks[blockY - 1][blockX];
 			case 'down':
-				return gridY < sizeY - 2 && stationaryBlocks[gridY + 1][gridX] === 18;
+				return stationaryBlocks[blockY + 1][blockX];
 			case 'left':
-				return gridX > 1 && stationaryBlocks[gridY][gridX - 1] === 18;
+				return stationaryBlocks[blockY][blockX - 1];
 			case 'right':
-				return gridX < sizeX - 2 && stationaryBlocks[gridY][gridX + 1] === 18;
+				return stationaryBlocks[blockY][blockX + 1];
 			default:
 				return false;
 		}
 	},
-	_crushBlock: function(direction) {
+	_crushBlock: function (direction) {
 		const position = this.sprite.position;
-		const gridX = position.x >> 4; // divide by 16
-		const gridY = position.y >> 4;
+		let blockX = position.x >> 4; // divide by 16
+		let blockY = position.y >> 4;
 		switch (direction) {
 			case 'up':
-				stationaryBlocks[gridY - 1][gridX] = 17;
+				--blockY;
 				break;
 			case 'down':
-				stationaryBlocks[gridY + 1][gridX] = 17;
+				++blockY
 				break;
 			case 'left':
-				stationaryBlocks[gridY][gridX - 1] = 17;
+				--blockX;
 				break;
 			case 'right':
-				stationaryBlocks[gridY][gridX + 1] = 17;
+				++blockX;
 				break;
 		}
+
+		const canCrushBlock =
+			blockX > 0 && blockX < sizeX - 1 &&
+			blockY > 0 && blockY < sizeY - 1 &&
+			stationaryBlocks[blockY][blockX] === 18;
+
+		if (canCrushBlock) {
+			stationaryBlocks[blockY][blockX] = 17;
+		}
+		return canCrushBlock;
 	},
-	_canTurn: function(direction) {
+	_canTurn: function (direction) {
 		switch (direction) {
 			case 'up':
 			case 'down':
@@ -93,34 +109,16 @@ const penguin = {
 				return false;
 		}
 	},
-	_canTurnVertical: function() {
+	_canTurnVertical: function () {
 		return this.sprite.position.x % 16 === 0;
 	},
-	_canTurnHorizontal: function() {
+	_canTurnHorizontal: function () {
 		return this.sprite.position.y % 16 === 0;
 	},
-	_canMove: function(direction) {
-		const position = this.sprite.position;
-		const gridX = position.x >> 4; // divide by 16
-		const gridY = position.y >> 4;
-		switch (direction) {
-			case 'up':
-				return this._canTurnVertical() && (!this._canTurnHorizontal() || !stationaryBlocks[gridY - 1][gridX]);
-			case 'down':
-				return this._canTurnVertical() && (!this._canTurnHorizontal() || !stationaryBlocks[gridY + 1][gridX]);
-			case 'left':
-				return this._canTurnHorizontal() && (!this._canTurnVertical() || !stationaryBlocks[gridY][gridX - 1]);
-			case 'right':
-				return this._canTurnHorizontal() && (!this._canTurnVertical() ||  !stationaryBlocks[gridY][gridX + 1]);
-			default:
-				return false;
-		}
+	_canMove: function (direction) {
+		return this._canTurn(direction) && !this._hasBlock(direction);
 	},
-	_move: function(direction) {
-		if (!this._canMove(direction)) {
-			return;
-		}
-
+	_move: function (direction) {
 		switch (direction) {
 			case 'up':
 				this.sprite.position.y -= 1;
