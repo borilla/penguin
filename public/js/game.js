@@ -3,8 +3,7 @@
 const sizeX = 15;
 const sizeY = 15;
 let gameFunction;
-let grid;
-let blockTexture;
+let stationaryBlocks;
 let blockContainer = new PIXI.Container();
 
 // create the pixi application and make it fullscreen
@@ -21,31 +20,33 @@ document.body.appendChild(app.view);
 PIXI.loader.add('img/block.png').load(setup);
 
 function setup() {
-	createTextures();
-	initializeGrid();
-	updateBlockContainer();
-	app.stage.addChild(blockContainer);
-	gameState = initGame();
 	app.ticker.add(delta => gameFunction());
+	restartGame();
 }
 
-function createTextures() {
-	blockTexture = PIXI.loader.resources['img/block.png'].texture;
+function restartGame() {
+	pressedKeys.clear();
+	initializeBlocks();
+	app.stage.addChild(blockContainer);
+	app.stage.addChild(penguin.sprite);
+	updateBlockContainer();
+	gameState = initGame();
 }
 
-function initializeGrid() {
-	grid = (new Array(sizeY)).fill(null);
-	grid.forEach((row, index) => {
-		grid[index] = (new Array(sizeX).fill(true))
+function initializeBlocks() {
+	stationaryBlocks = (new Array(sizeY)).fill(null);
+	stationaryBlocks.forEach((row, index) => {
+		stationaryBlocks[index] = (new Array(sizeX).fill(true))
 	});
 }
 
 function updateBlockContainer() {
 	blockContainer.removeChildren();
+	const blockTexture = PIXI.loader.resources['img/block.png'].texture;
 
 	for (y = 0; y < sizeY; ++y) {
 		for (x = 0; x < sizeX; ++x) {
-			if (grid[y][x]) {
+			if (stationaryBlocks[y][x]) {
 				const blockSprite = new PIXI.Sprite(blockTexture);
 				blockSprite.position.x = x * 16;
 				blockSprite.position.y = y * 16;
@@ -56,16 +57,17 @@ function updateBlockContainer() {
 }
 
 function initGame() {
-	console.log('initGame');
 	const mazeSteps = generateMaze(7, 7);
 	const gridSteps = convertToGridSteps(mazeSteps);
+	const [x, y] = gridSteps[0];
+	penguin.sprite.position.set(x * 16, y * 16);
 	let currentGridStep = 0;
 	gameFunction = doNextStep;
 
 	function doNextStep() {
 		if (currentGridStep < gridSteps.length) {
 			const [x, y] = gridSteps[currentGridStep];
-			grid[y][x] = false;
+			stationaryBlocks[y][x] = false;
 			updateBlockContainer();
 			++currentGridStep;
 		}
@@ -76,6 +78,17 @@ function initGame() {
 	}
 }
 
+const pressedKeys = new Set();
+window.addEventListener('keydown', event => {
+	pressedKeys.add(event.code);
+});
+window.addEventListener('keyup', event => {
+	pressedKeys.delete(event.code);
+});
+
 function playGame() {
-	console.log('playGame');
+	if (pressedKeys.has('Space')) {
+		restartGame();
+	}
+	penguin.update();
 }

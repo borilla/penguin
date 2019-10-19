@@ -1,6 +1,4 @@
-const readline = require('readline');
-
-function generateMaze(sizeX, sizeY, startX = sizeX >> 1, startY = sizeY >> 1) {
+function generateMaze(sizeX, sizeY, startX = randomInt(sizeX), startY = randomInt(sizeY)) {
 	const current = [startX, startY];
 	const steps = [current];
 
@@ -32,7 +30,7 @@ function generateMaze(sizeX, sizeY, startX = sizeX >> 1, startY = sizeY >> 1) {
 	iterate(current);
 	return steps;
 }
-
+ 
 function randomInt(max) {
 	return Math.floor(Math.random() * max);
 }
@@ -72,58 +70,3 @@ function convertToGridSteps(steps) {
 
 	return gridSteps;
 }
-
-function plot(sizeX, sizeY, gridSteps) {
-	const rows = (new Array(sizeY * 2 + 1)).fill(null);
-	rows.forEach((row, index) => {
-		rows[index] = (new Array(sizeX * 2 + 1).fill('█'))
-	});
-
-	let done;
-	const promise = new Promise(resolve => {
-		done = resolve;
-	});
-
-	function drawRows() {
-		const rowStrings = rows.map(row => row.join(''));
-		process.stdout.write(rowStrings.join('\n') + '\n');
-
-	}
-
-	function redrawRows() {
-		readline.moveCursor(process.stdout, 0, -(sizeY * 2 + 1));
-		drawRows();
-	}
-
-	function doNext(index) {
-		const step = gridSteps[index];
-		let isNewStep = false;
-
-		if (step) {
-			const [x, y] = step;
-			rows[y][x] = ' ';
-		}
-
-		if (index <= gridSteps.length) {
-			redrawRows();
-			setTimeout(() => doNext(index + 1), 16);
-		}
-		else {
-			done();
-		}
-	}
-
-	drawRows();
-	doNext(0);
-	return promise;
-}
-/* 
-const sizeX = +process.argv[2] || 20;
-const sizeY = +process.argv[3] || 8;
-const startX = +process.argv[4] || randomInt(sizeX);
-const startY = +process.argv[5] || randomInt(sizeY);
-const steps = generateMaze(sizeX, sizeY, startX, startY);
-const gridSteps = convertToGridSteps(steps);
-
-plot(sizeX, sizeY, gridSteps);
- */
