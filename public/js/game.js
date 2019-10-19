@@ -2,7 +2,7 @@
 
 const sizeX = 15;
 const sizeY = 15;
-let gameState = renderGrid;
+let gameFunction;
 let grid;
 let blockTexture;
 let blockContainer = new PIXI.Container();
@@ -25,7 +25,8 @@ function setup() {
 	initializeGrid();
 	updateBlockContainer();
 	app.stage.addChild(blockContainer);
-	app.ticker.add(delta => gameLoop(delta));
+	gameState = initGame();
+	app.ticker.add(delta => gameFunction());
 }
 
 function createTextures() {
@@ -35,7 +36,7 @@ function createTextures() {
 function initializeGrid() {
 	grid = (new Array(sizeY)).fill(null);
 	grid.forEach((row, index) => {
-		grid[index] = (new Array(sizeX).fill('█'))
+		grid[index] = (new Array(sizeX).fill(true))
 	});
 }
 
@@ -54,9 +55,27 @@ function updateBlockContainer() {
 	}
 }
 
-function gameLoop(delta) {
-	gameState();
+function initGame() {
+	console.log('initGame');
+	const mazeSteps = generateMaze(7, 7);
+	const gridSteps = convertToGridSteps(mazeSteps);
+	let currentGridStep = 0;
+	gameFunction = doNextStep;
+
+	function doNextStep() {
+		if (currentGridStep < gridSteps.length) {
+			const [x, y] = gridSteps[currentGridStep];
+			grid[y][x] = false;
+			updateBlockContainer();
+			++currentGridStep;
+		}
+		else {
+			// game intro has finished
+			gameFunction = playGame;
+		}
+	}
 }
 
-function renderGrid() {
+function playGame() {
+	console.log('playGame');
 }
