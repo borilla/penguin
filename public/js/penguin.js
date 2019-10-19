@@ -1,24 +1,36 @@
 const penguin = {
-	sprite: new PIXI.Sprite.from('img/penguin.png'),
-	direction: 'none',
+	textures: {},
+	initTextures: function(textures) {
+		this.textures = {
+			'up': textures['penguin/walk-up-0.png'],
+			'down': textures['penguin/walk-down-0.png'],
+			'left': textures['penguin/walk-left-0.png'],
+			'right': textures['penguin/walk-right-0.png'],
+			'none': textures['penguin/walk-down-1.png']
+		};
+	},
+	sprite: new PIXI.Sprite(),
+	facing: 'none',
+	moving: 'none',
 	update: function() {
 		if (pressedKeys.has('ArrowUp') && this._canTurn('up')) {
-			this.direction = 'up';
+			this.facing = this.moving = 'up';
 		}
 		else if (pressedKeys.has('ArrowDown') && this._canTurn('down')) {
-			this.direction = 'down';
+			this.facing = this.moving = 'down';
 		}
 		else if (pressedKeys.has('ArrowLeft') && this._canTurn('left')) {
-			this.direction = 'left';
+			this.facing = this.moving = 'left';
 		}
 		else if (pressedKeys.has('ArrowRight') && this._canTurn('right')) {
-			this.direction = 'right';
+			this.facing = this.moving = 'right';
 		}
 		else if (this._canTurnHorizontal() && this._canTurnVertical()) {
-			this.direction = 'none';
+			this.moving = 'none';
 		}
 
-		this._move(this.direction);
+		this.sprite.texture = this.textures[this.facing];
+		this._move(this.moving);
 	},
 	_canTurn: function(direction) {
 		switch (direction) {

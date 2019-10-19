@@ -2,6 +2,7 @@
 
 const sizeX = 15;
 const sizeY = 15;
+let textures;
 let gameFunction;
 let stationaryBlocks;
 let blockContainer = new PIXI.Container();
@@ -17,9 +18,11 @@ app.renderer.resize(sizeX * 16, sizeY * 16);
 document.body.appendChild(app.view);
 
 // load images and run the `setup` function when it's done
-PIXI.loader.add('img/block.png').load(setup);
+PIXI.loader.add('img/sprites.json').load(onAssetsLoaded);
 
-function setup() {
+function onAssetsLoaded() {
+	textures = PIXI.loader.resources['img/sprites.json'].textures;
+	penguin.initTextures(textures);
 	app.ticker.add(delta => gameFunction());
 	restartGame();
 }
@@ -42,7 +45,7 @@ function initializeBlocks() {
 
 function updateBlockContainer() {
 	blockContainer.removeChildren();
-	const blockTexture = PIXI.loader.resources['img/block.png'].texture;
+	const blockTexture = textures['block/block.png'];
 
 	for (y = 0; y < sizeY; ++y) {
 		for (x = 0; x < sizeX; ++x) {
