@@ -57,45 +57,59 @@ const penguin = {
 		const blockY = position.y >> 4;
 		switch (direction) {
 			case 'up':
-				return stationaryBlocks[blockY - 1][blockX];
+				return stationaryBlocks.blocks[blockY - 1][blockX];
 			case 'down':
-				return stationaryBlocks[blockY + 1][blockX];
+				return stationaryBlocks.blocks[blockY + 1][blockX];
 			case 'left':
-				return stationaryBlocks[blockY][blockX - 1];
+				return stationaryBlocks.blocks[blockY][blockX - 1];
 			case 'right':
-				return stationaryBlocks[blockY][blockX + 1];
+				return stationaryBlocks.blocks[blockY][blockX + 1];
 			default:
 				return false;
 		}
 	},
 	_crushBlock: function (direction) {
 		const position = this.sprite.position;
-		let blockX = position.x >> 4; // divide by 16
-		let blockY = position.y >> 4;
+		let blockX = blockXX = position.x >> 4; // divide by 16
+		let blockY = blockYY = position.y >> 4;
 		switch (direction) {
 			case 'up':
-				--blockY;
+				blockY -= 1;
+				blockYY -= 2;
 				break;
 			case 'down':
-				++blockY
+				blockY += 1;
+				blockYY += 2
 				break;
 			case 'left':
-				--blockX;
+				blockX -= 1;
+				blockXX -= 2;
 				break;
 			case 'right':
-				++blockX;
+				blockX += 1;
+				blockXX += 2;
 				break;
 		}
 
-		const canCrushBlock =
-			blockX > 0 && blockX < sizeX - 1 &&
-			blockY > 0 && blockY < sizeY - 1 &&
-			stationaryBlocks[blockY][blockX] === 18;
+		const canPushBlock =
+			blockX > 0 && blockX < GAME_SIZE_X - 1 &&
+			blockY > 0 && blockY < GAME_SIZE_Y - 1 &&
+			stationaryBlocks.blocks[blockY][blockX];
 
-		if (canCrushBlock) {
-			stationaryBlocks[blockY][blockX] = 17;
+		if (!canPushBlock) {
+			return false;
 		}
-		return canCrushBlock;
+
+		if (stationaryBlocks.blocks[blockYY][blockXX]) {
+			if (stationaryBlocks.blocks[blockY][blockX] === BLOCK_INITIAL_INTEGRITY) {
+				stationaryBlocks.blocks[blockY][blockX] = BLOCK_INITIAL_INTEGRITY - 1;
+			}
+		}
+		else {
+			movingBlocks.startPushing(blockX, blockY, direction);
+		}
+
+		return true;
 	},
 	_canTurn: function (direction) {
 		switch (direction) {
@@ -137,5 +151,3 @@ const penguin = {
 		}
 	}
 };
-
-var a = { x: 12, f: function() { console.log(this.x) } }

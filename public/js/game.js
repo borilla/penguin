@@ -1,18 +1,16 @@
 // Tutorial: https://github.com/kittykatattack/learningPixi
 
-const sizeX = 15;
-const sizeY = 15;
+const GAME_SIZE_X = 15;
+const GAME_SIZE_Y = 15;
 let textures;
 let gameFunction;
-let stationaryBlocks;
-let blockContainer = new PIXI.Container();
 
 // create the pixi application and make it fullscreen
 const app = new PIXI.Application();
 app.renderer.backgroundColor = 0x000000;
 app.renderer.view.style.position = 'absolute';
 app.renderer.view.style.display = 'block';
-app.renderer.resize(sizeX * 16, sizeY * 16);
+app.renderer.resize(GAME_SIZE_X * 16, GAME_SIZE_Y * 16);
 
 // add pixi canvas to html document
 document.body.appendChild(app.view);
@@ -23,46 +21,23 @@ PIXI.Loader.shared.add('img/sprites.json').load(onAssetsLoaded);
 function onAssetsLoaded() {
 	textures = PIXI.Loader.shared.resources['img/sprites.json'].textures;
 	penguin.initTextures(textures);
+	stationaryBlocks.initTextures(textures);
+	movingBlocks.initTextures(textures);
 	app.ticker.add(delta => gameFunction());
 	restartGame();
 }
 
 function restartGame() {
 	pressedKeys.clear();
-	initializeBlocks();
+	stationaryBlocks.initBlocks();
+	movingBlocks.init();
 	penguin.facing = 'down';
 	penguin.moving = 'none'
-	app.stage.addChild(blockContainer);
+	app.stage.addChild(stationaryBlocks.container);
+	app.stage.addChild(movingBlocks.container);
 	app.stage.addChild(penguin.sprite);
-	updateBlockContainer();
+	stationaryBlocks.update();
 	gameState = initGame();
-}
-
-function initializeBlocks() {
-	stationaryBlocks = (new Array(sizeY)).fill(null);
-	stationaryBlocks.forEach((row, index) => {
-		stationaryBlocks[index] = (new Array(sizeX).fill(18))
-	});
-}
-
-function updateBlockContainer() {
-	blockContainer.removeChildren();
-
-	for (y = 0; y < sizeY; ++y) {
-		for (x = 0; x < sizeX; ++x) {
-			const blockIntegrity = stationaryBlocks[y][x];
-			if (blockIntegrity) {
-				const texture = `block/block-${blockIntegrity >> 1}.png`;
-				const blockSprite = new PIXI.Sprite(textures[texture]);
-				blockSprite.position.x = x * 16;
-				blockSprite.position.y = y * 16;
-				blockContainer.addChild(blockSprite);
-				if (blockIntegrity < 18) {
-					stationaryBlocks[y][x] = blockIntegrity - 1;
-				}
-			}
-		}
-	}
 }
 
 function initGame() {
@@ -76,8 +51,8 @@ function initGame() {
 	function doNextStep() {
 		if (currentGridStep < gridSteps.length) {
 			const [x, y] = gridSteps[currentGridStep];
-			stationaryBlocks[y][x] = 0;
-			updateBlockContainer();
+			stationaryBlocks.blocks[y][x] = 17;
+			stationaryBlocks.update();
 			++currentGridStep;
 		}
 		else {
@@ -99,7 +74,9 @@ function playGame() {
 	// press 'escape' to restart game
 	if (pressedKeys.has('Escape')) {
 		restartGame();
+		return;
 	}
-	updateBlockContainer();
+	movingBlocks.update();
+	stationaryBlocks.update();
 	penguin.update();
 }
