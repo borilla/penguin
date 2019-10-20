@@ -25,3 +25,12 @@ npm start
 
 Open the application on localhost: http://127.0.0.1:8080
 
+## Controls
+
+* Arrow keys to move
+* Space to push/crush blocks
+* Escape to refresh the screen
+
+## Where's the baddies?
+
+Rome wasn't built in a day
