@@ -2,27 +2,30 @@ const penguin = {
 	textures: {},
 	initTextures: function(textures) {
 		this.textures = {
-			'push-down-0': textures['penguin/push-down-0.png'],
-			'push-down-1': textures['penguin/push-down-1.png'],
-			'push-left-0': textures['penguin/push-left-0.png'],
-			'push-left-1': textures['penguin/push-left-1.png'],
-			'push-right-0': textures['penguin/push-right-0.png'],
-			'push-right-1': textures['penguin/push-right-1.png'],
+			'crush-down': textures['penguin/push-down-1.png'],
+			'crush-left': textures['penguin/push-left-1.png'],
+			'crush-right': textures['penguin/push-right-1.png'],
+			'crush-up': textures['penguin/push-up-1.png'],
+			'push-down': textures['penguin/push-down-1.png'],
+			'push-left': textures['penguin/push-left-1.png'],
+			'push-right': textures['penguin/push-right-1.png'],
 			'push-up-0': textures['penguin/push-up-0.png'],
 			'push-up-1': textures['penguin/push-up-1.png'],
-			'walk-up-0': textures['penguin/walk-up-0.png'],
-			'walk-up-1': textures['penguin/walk-up-1.png'],
+			'push-up': textures['penguin/push-up-0.png'],
 			'walk-down-0': textures['penguin/walk-down-0.png'],
 			'walk-down-1': textures['penguin/walk-down-1.png'],
 			'walk-left-0': textures['penguin/walk-left-1.png'],
 			'walk-left-1': textures['penguin/walk-left-0.png'],
 			'walk-right-0': textures['penguin/walk-right-1.png'],
 			'walk-right-1': textures['penguin/walk-right-0.png'],
+			'walk-up-0': textures['penguin/walk-up-0.png'],
+			'walk-up-1': textures['penguin/walk-up-1.png'],
 		};
 	},
 	sprite: new PIXI.Sprite(),
 	facing: 'down',
 	moving: 'none',
+	action: 'none',
 	update: function() {
 		const isOnBlock = this._canTurnHorizontal() && this._canTurnVertical();
 
@@ -45,12 +48,12 @@ const penguin = {
 		let textureName = `walk-${this.facing}-${(this.sprite.position.x >> 3) % 2 + (this.sprite.position.y >> 3) % 2}`;
 
 		if (isOnBlock && pressedKeys.has('Space')) {
-			textureName = `push-${this.facing}-0`;
-			this.moving = 'none';
- 
 			if (this._hasBlock(this.facing)) {
-				textureName = `push-${this.facing}-1`;
 				this._pushBlock(this.facing);
+			}
+			if (this.action === 'push' || this.action === 'crush') {
+				textureName = `${this.action}-${this.facing}`;
+				this.moving = 'none';
 			}
 		}
 
@@ -58,6 +61,7 @@ const penguin = {
 
 		if (this._canMove(this.moving)) {
 			this._move(this.moving);
+			this.action = 'walk';
 		}
 		else {
 			this.moving = 'none';
@@ -106,12 +110,19 @@ const penguin = {
 				break;
 		}
 
-		const canPushBlock =
-			blockX > 0 && blockX < GAME_SIZE_X - 1 &&
-			blockY > 0 && blockY < GAME_SIZE_Y - 1 &&
-			stationaryBlocks.blocks[blockY][blockX];
+		const isEdge = 
+			blockX < 1 || blockX >= GAME_SIZE_X - 1 ||
+			blockY < 1 || blockY >= GAME_SIZE_Y - 1;
 
-		if (!canPushBlock) {
+		if (isEdge) {
+			this.action = 'crush';
+			return false;
+		}
+
+		const hasBlock = stationaryBlocks.blocks[blockY][blockX];
+
+		if (!hasBlock) {
+			this.action = 'none';
 			return false;
 		}
 
@@ -119,9 +130,11 @@ const penguin = {
 			if (stationaryBlocks.blocks[blockY][blockX] === BLOCK_INITIAL_INTEGRITY) {
 				stationaryBlocks.blocks[blockY][blockX] = BLOCK_INITIAL_INTEGRITY - 1;
 			}
+			this.action = 'crush';
 		}
 		else {
 			movingBlocks.startPushing(blockX, blockY, direction);
+			this.action = 'push';
 		}
 
 		return true;
