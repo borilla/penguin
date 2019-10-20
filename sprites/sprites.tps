@@ -26,7 +26,7 @@
             </struct>
         </array>
         <key>allowRotation</key>
-        <true/>
+        <false/>
         <key>shapeDebug</key>
         <false/>
         <key>dpi</key>
@@ -56,7 +56,7 @@
         <key>jxrCompressionLevel</key>
         <uint>0</uint>
         <key>ditherType</key>
-        <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
+        <enum type="SettingsBase::DitherType">PngQuantLow</enum>
         <key>backgroundColor</key>
         <uint>0</uint>
         <key>libGdx</key>
@@ -70,7 +70,7 @@
             </struct>
         </struct>
         <key>shapePadding</key>
-        <uint>0</uint>
+        <uint>2</uint>
         <key>jpgQuality</key>
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
@@ -84,7 +84,7 @@
         <key>textureFormat</key>
         <enum type="SettingsBase::TextureFormat">png</enum>
         <key>borderPadding</key>
-        <uint>0</uint>
+        <uint>2</uint>
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
@@ -155,7 +155,7 @@
         <key>prependSmartFolderName</key>
         <false/>
         <key>autodetectAnimations</key>
-        <true/>
+        <false/>
         <key>globalSpriteSettings</key>
         <struct type="SpriteSettings">
             <key>scale</key>
@@ -181,7 +181,23 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">block/block.png</key>
+            <key type="filename">block/block-1.png</key>
+            <key type="filename">block/block-2.png</key>
+            <key type="filename">block/block-3.png</key>
+            <key type="filename">block/block-4.png</key>
+            <key type="filename">block/block-5.png</key>
+            <key type="filename">block/block-6.png</key>
+            <key type="filename">block/block-7.png</key>
+            <key type="filename">block/block-8.png</key>
+            <key type="filename">block/block-9.png</key>
+            <key type="filename">penguin/push-down-0.png</key>
+            <key type="filename">penguin/push-down-1.png</key>
+            <key type="filename">penguin/push-left-0.png</key>
+            <key type="filename">penguin/push-left-1.png</key>
+            <key type="filename">penguin/push-right-0.png</key>
+            <key type="filename">penguin/push-right-1.png</key>
+            <key type="filename">penguin/push-up-0.png</key>
+            <key type="filename">penguin/push-up-1.png</key>
             <key type="filename">penguin/walk-down-0.png</key>
             <key type="filename">penguin/walk-down-1.png</key>
             <key type="filename">penguin/walk-left-0.png</key>
