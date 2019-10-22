@@ -2,6 +2,8 @@
 
 Trying out [pixijs](https://pixijs.download/dev/docs/index.html) to make a retro game
 
+![Game screenshot](doc/screenshot.png "Game screenshot")
+
 ## Run it on your machine
 
 Clone the repo
