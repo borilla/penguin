@@ -29,6 +29,16 @@ Baddie.prototype._chooseAction = function () {
 		return;
 	}
 
+	// if we're crushing a block then wait until it has finished
+	if (this.action === 'push') {
+		const neighbour = Baddie._blockNeighbour(blockX, blockY, this.direction);
+		// if block has been crushed then walk forward, otherwise keep pushing
+		if (neighbour === 0) {
+			this.action = 'walk';
+		}
+		return;
+	}
+
 	// otherwise, make an array of all potential action choices
 	const choices = [];
 	for (const direction of ['up', 'down', 'left', 'right']) {
@@ -57,7 +67,14 @@ Baddie.prototype._actionProbability = function (action, direction) {
 		case 'push':
 			return 2;
 		case 'walk':
-			return Baddie._directionDifference(direction, this.direction) === 2 ? 1 : 32;
+			const diff = Baddie._directionDifference(direction, this.direction);
+			if (diff === 2) {
+				return 1;
+			}
+			if (diff === 1) {
+				return 16;
+			}
+			return 32;
 		default:
 			return 0;
 	}
@@ -107,17 +124,19 @@ Baddie.prototype._doAction = function () {
 		case 'walk':
 			this._walk();
 			break;
+		case 'push':
+			this._push();
 	}
 };
 
 Baddie.prototype._updateSprite = function () {
 	let textureName;
-	// if (this.action === 'push') {
-	// 	textureName = `baddie/push-${this.direction}.png`;
-	// }
-	// else {
+	if (this.action === 'push') {
+		textureName = `baddie/push-${this.direction}.png`;
+	}
+	else {
 		textureName = `baddie/walk-${this.direction}-${(this.sprite.position.x >> 3) % 2 + (this.sprite.position.y >> 3) % 2}.png`;
-	// }
+	}
 	// using global `textures` var
 	this.sprite.texture = textures[textureName];
 };
@@ -144,5 +163,34 @@ Baddie.prototype._walk = function () {
 		case 'right':
 			this.sprite.x += 1;
 			break;
+	}
+};
+
+Baddie.prototype._push = function () {
+	const { x: spriteX, y: spriteY } = this.sprite;
+	const blockX = spriteX % BLOCK_SIZE ? null : spriteX / BLOCK_SIZE;
+	const blockY = spriteY % BLOCK_SIZE ? null : spriteY / BLOCK_SIZE;
+
+	let blockXX = blockX;
+	let blockYY = blockY;
+
+	switch (this.direction) {
+		case 'up':
+			--blockYY;
+			break;
+		case 'down':
+			++blockYY;
+			break;
+		case 'left':
+			--blockXX;
+			break;
+		case 'right':
+			++blockXX;
+			break;
+	}
+
+	const neighbour = stationaryBlocks.blocks[blockYY][blockXX];
+	if (neighbour === BLOCK_INITIAL_INTEGRITY) {
+		stationaryBlocks.blocks[blockYY][blockXX] = BLOCK_INITIAL_INTEGRITY - 1;
 	}
 };
