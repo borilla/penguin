@@ -2,10 +2,10 @@ const penguin = {
 	textures: {},
 	initTextures: function(textures) {
 		this.textures = {
-			'push-down': textures['penguin/push-down-1.png'],
-			'push-left': textures['penguin/push-left-1.png'],
-			'push-right': textures['penguin/push-right-1.png'],
-			'push-up': textures['penguin/push-up-0.png'],
+			'push-down': textures['penguin/push-down.png'],
+			'push-left': textures['penguin/push-left.png'],
+			'push-right': textures['penguin/push-right.png'],
+			'push-up': textures['penguin/push-up.png'],
 			'walk-down-0': textures['penguin/walk-down-0.png'],
 			'walk-down-1': textures['penguin/walk-down-1.png'],
 			'walk-left-0': textures['penguin/walk-left-1.png'],
