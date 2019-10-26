@@ -1,10 +1,10 @@
 # penguin
 
-Trying out [pixijs](https://pixijs.download/dev/docs/index.html) to make a retro game
+Using [pixijs](https://pixijs.download/dev/docs/index.html) to make a retro game
 
 ![Game screenshot](doc/screenshot.png "Game screenshot")
 
-## Run it on your machine
+## Try it out
 
 Clone the repo
 
@@ -29,10 +29,14 @@ Open the application on localhost: http://127.0.0.1:8080
 
 ## Controls
 
-* Arrow keys to move
-* Space to push/crush blocks
-* Escape to refresh the screen
+* &lt;Arrow keys&gt; to move
+* &lt;Space&gt; to push/crush blocks
+* &lt;Escape&gt; to refresh the screen
 
-## Where's the baddies?
+## Why don't the baddies kill me?
 
 Rome wasn't built in a day
+
+## Thanks
+
+This tutorial was super-useful for getting started with pixijs: https://github.com/kittykatattack/learningPixi
