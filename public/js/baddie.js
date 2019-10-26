@@ -1,10 +1,14 @@
-function Baddie() {
+function Baddie(blockX = 1, blockY = 1) {
 	this.sprite = new PIXI.Sprite();
-	this.sprite.x = 16;
-	this.sprite.y = 16;
+	this.sprite.x = blockX * BLOCK_SIZE;
+	this.sprite.y = blockY * BLOCK_SIZE;
 	this.direction = 'down';
-	this.action = 'walk';
-	Baddie.container.addChild(this.sprite);	
+	this.action = 'hatching';
+	this.frameCount = 0;
+	Baddie.container.addChild(this.sprite);
+	if (stationaryBlocks.blocks.length) {
+		stationaryBlocks.blocks[blockY][blockX] = BLOCK_INITIAL_INTEGRITY - 1;
+	}
 }
 
 Baddie.container = new PIXI.Container();
@@ -20,7 +24,8 @@ Baddie.prototype.update = function () {
 };
 
 Baddie.prototype._chooseAction = function () {
-	if (this.action === 'getting-pushed') {
+	if (this.action === 'getting-pushed' || this.action === 'hatching') {
+		// don't have a choice about what to do
 		return;
 	}
 
@@ -131,6 +136,9 @@ Baddie.prototype._doAction = function () {
 		case 'push':
 			this._push();
 			break;
+		case 'hatching':
+			this._hatch();
+			break;
 	}
 };
 
@@ -146,20 +154,15 @@ Baddie.prototype._updateSprite = function () {
 			break;
 		case 'getting-pushed':
 			break;
+		case 'hatching':
+			textureName = `baddie/hatch-${Math.floor(this.frameCount / 5)}.png`;
+			break;
 	}
 
-	// using global `textures` var
 	if (textureName) {
+		// using global `textures` var
 		this.sprite.texture = textures[textureName];
 	}
-};
-
-Baddie.prototype._canTurnHorizontal = function () {
-	return this.sprite.position.y % 16 === 0;
-};
-
-Baddie.prototype._canTurnVertical = function () {
-	return this.sprite.position.x % 16 === 0;
 };
 
 Baddie.prototype._walk = function () {
@@ -207,3 +210,10 @@ Baddie.prototype._push = function () {
 		stationaryBlocks.blocks[blockYY][blockXX] = BLOCK_INITIAL_INTEGRITY - 1;
 	}
 };
+
+Baddie.prototype._hatch = function () {
+	if (++this.frameCount === 60) {
+		// finished hatching
+		this.action = 'none';
+	}
+}

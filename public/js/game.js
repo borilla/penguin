@@ -4,7 +4,7 @@ const GAME_SIZE_X = 15;
 const GAME_SIZE_Y = 15;
 let textures = {};
 let gameLoopFunction;
-let baddie = new Baddie();
+let baddie = null;
 let frameCount = 0;
 
 // create the pixi application and make it fullscreen
@@ -34,12 +34,11 @@ function onAssetsLoaded() {
 }
 
 function restartGame() {
-	baddie.destroy();
-	baddie = new Baddie();
 	pressedKeys.clear();
 	stationaryBlocks.initBlocks();
 	movingBlocks.init();
 	penguin.init();
+	respawnBaddie();
 	stationaryBlocks.update();
 	frameCount = 0;
 	initGame();
@@ -102,8 +101,24 @@ function checkForCollisions() {
 }
 
 function respawnBaddie() {
-	baddie.destroy();
-	baddie = new Baddie();
+	if (baddie) {
+		baddie.destroy();
+	}
+	const block = chooseRandomBlock();
+	baddie = new Baddie(block.x, block.y);
+}
+
+function chooseRandomBlock() {
+	const blocks = [];
+	for (let x = 1; x < GAME_SIZE_X - 1; ++x) {
+		for (let y = 1; y < GAME_SIZE_Y - 1; ++y) {
+			if (stationaryBlocks.blocks[y][x] === BLOCK_INITIAL_INTEGRITY) {
+				blocks.push({x, y});
+			}
+		}
+	}
+	return chooseRandom(blocks);
+
 }
 
 function isCollision(sprite1, sprite2) {
