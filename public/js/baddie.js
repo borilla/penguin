@@ -4,6 +4,7 @@ function Baddie() {
 	this.sprite.y = 16;
 	this.direction = 'down';
 	this.action = 'walk';
+	this.pushedBy = null;
 	Baddie.container.addChild(this.sprite);	
 }
 
@@ -20,6 +21,10 @@ Baddie.prototype.update = function () {
 };
 
 Baddie.prototype._chooseAction = function () {
+	if (this.action === 'getting-pushed') {
+		return;
+	}
+
 	const { x: spriteX, y: spriteY } = this.sprite;
 	const blockX = spriteX % BLOCK_SIZE ? null : spriteX / BLOCK_SIZE;
 	const blockY = spriteY % BLOCK_SIZE ? null : spriteY / BLOCK_SIZE;
@@ -126,19 +131,30 @@ Baddie.prototype._doAction = function () {
 			break;
 		case 'push':
 			this._push();
+			break;
+		case 'getting-pushed':
+			this._gettingPushed();
 	}
 };
 
 Baddie.prototype._updateSprite = function () {
 	let textureName;
-	if (this.action === 'push') {
-		textureName = `baddie/push-${this.direction}.png`;
+
+	switch (this.action) {
+		case 'push':
+			textureName = `baddie/push-${this.direction}.png`;
+			break;
+		case 'walk':
+			textureName = `baddie/walk-${this.direction}-${(this.sprite.position.x >> 3) % 2 + (this.sprite.position.y >> 3) % 2}.png`;
+			break;
+		case 'getting-pushed':
+			break;
 	}
-	else {
-		textureName = `baddie/walk-${this.direction}-${(this.sprite.position.x >> 3) % 2 + (this.sprite.position.y >> 3) % 2}.png`;
-	}
+
 	// using global `textures` var
-	this.sprite.texture = textures[textureName];
+	if (textureName) {
+		this.sprite.texture = textures[textureName];
+	}
 };
 
 Baddie.prototype._canTurnHorizontal = function () {
@@ -194,3 +210,26 @@ Baddie.prototype._push = function () {
 		stationaryBlocks.blocks[blockYY][blockXX] = BLOCK_INITIAL_INTEGRITY - 1;
 	}
 };
+
+Baddie.prototype._gettingPushed = function () {
+	const block = this.pushedBy;
+
+	switch (block.direction) {
+		case 'up':
+			this.sprite.x = block.sprite.x;
+			this.sprite.y = block.sprite.y - BLOCK_SIZE;
+			break;
+		case 'down':
+			this.sprite.x = block.sprite.x;
+			this.sprite.y = block.sprite.y + BLOCK_SIZE;
+			break;
+		case 'left':
+			this.sprite.x = block.sprite.x - BLOCK_SIZE;
+			this.sprite.y = block.sprite.y;
+			break;
+		case 'right':
+			this.sprite.x = block.sprite.x + BLOCK_SIZE;
+			this.sprite.y = block.sprite.y;
+			break;
+	}
+}

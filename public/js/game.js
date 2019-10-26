@@ -25,10 +25,10 @@ function onAssetsLoaded() {
 	stationaryBlocks.initTextures(textures);
 	movingBlocks.initTextures(textures);
 	app.ticker.add(delta => gameLoopFunction());
-	app.stage.addChild(stationaryBlocks.container);
 	app.stage.addChild(movingBlocks.container);
 	app.stage.addChild(Baddie.container);
 	app.stage.addChild(penguin.sprite);
+	app.stage.addChild(stationaryBlocks.container);
 	restartGame();
 }
 
@@ -79,8 +79,28 @@ function playGame() {
 		restartGame();
 		return;
 	}
-	movingBlocks.update();
 	stationaryBlocks.update();
-	baddie.update();
 	penguin.update();
+	movingBlocks.update();
+	checkForCollisions();
+	baddie.update();
+}
+
+function checkForCollisions() {
+	movingBlocks.blocks.forEach(block => {
+		if (isCollision(block.sprite, baddie.sprite)) {
+			baddie.action = 'getting-pushed';
+			baddie.pushedBy = block;
+		}
+	});
+}
+
+function isCollision(sprite1, sprite2) {
+	if (Math.abs(sprite1.x - sprite2.x) > BLOCK_SIZE / 2) {
+		return false;
+	}
+	if (Math.abs(sprite1.y - sprite2.y) > BLOCK_SIZE / 2) {
+		return false;
+	}
+	return true;
 }
