@@ -138,7 +138,7 @@ const penguin = {
 			this.action = 'push';
 		}
 		else {
-			movingBlocks.startPushing(blockX, blockY, direction);
+			movingBlocks.add(blockX, blockY, direction);
 			this.action = 'push';
 		}
 

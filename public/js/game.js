@@ -90,9 +90,14 @@ function checkForCollisions() {
 	movingBlocks.blocks.forEach(block => {
 		if (isCollision(block.sprite, baddie.sprite)) {
 			baddie.action = 'getting-pushed';
-			baddie.pushedBy = block;
+			block.isPushing.push(baddie);
 		}
 	});
+}
+
+function respawnBaddie() {
+	baddie.destroy();
+	baddie = new Baddie();
 }
 
 function isCollision(sprite1, sprite2) {

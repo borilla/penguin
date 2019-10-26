@@ -60,12 +60,12 @@ const movingBlocks = {
 	init: function () {
 		blocks = new Set();
 	},
-	startPushing: function (blockX, blockY, direction) {
+	add: function (blockX, blockY, direction) {
 		const sprite = new PIXI.Sprite(this.textures.block);
 		sprite.position.x = blockX * BLOCK_SIZE;
 		sprite.position.y = blockY * BLOCK_SIZE;
 		this.container.addChild(sprite);
-		this.blocks.add({ sprite, direction });
+		this.blocks.add({ sprite, direction, isPushing: [] });
 		stationaryBlocks.blocks[blockY][blockX] = 0;
 	},
 	update: function () {
@@ -77,15 +77,19 @@ const movingBlocks = {
 		switch (block.direction) {
 			case 'up':
 				position.y -= BLOCK_PUSH_SPEED;
+				block.isPushing.forEach(victim => { victim.sprite.y = position.y - BLOCK_SIZE });
 				break;
 			case 'down':
 				position.y += BLOCK_PUSH_SPEED;
+				block.isPushing.forEach(victim => { victim.sprite.y = position.y + BLOCK_SIZE });
 				break;
 			case 'left':
 				position.x -= BLOCK_PUSH_SPEED;
+				block.isPushing.forEach(victim => { victim.sprite.x = position.x - BLOCK_SIZE });
 				break;
 			case 'right':
 				position.x += BLOCK_PUSH_SPEED;
+				block.isPushing.forEach(victim => { victim.sprite.x = position.x + BLOCK_SIZE });
 				break;
 		}
 
@@ -115,7 +119,7 @@ const movingBlocks = {
 			stationaryBlocks.blocks[blockY][blockX] = BLOCK_INITIAL_INTEGRITY;
 			this.container.removeChild(block.sprite);
 			this.blocks.delete(block);
+			block.isPushing.forEach(victim => { respawnBaddie(victim) });
 		}
 	},
 };
-

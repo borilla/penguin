@@ -4,7 +4,6 @@ function Baddie() {
 	this.sprite.y = 16;
 	this.direction = 'down';
 	this.action = 'walk';
-	this.pushedBy = null;
 	Baddie.container.addChild(this.sprite);	
 }
 
@@ -132,8 +131,6 @@ Baddie.prototype._doAction = function () {
 		case 'push':
 			this._push();
 			break;
-		case 'getting-pushed':
-			this._gettingPushed();
 	}
 };
 
@@ -210,26 +207,3 @@ Baddie.prototype._push = function () {
 		stationaryBlocks.blocks[blockYY][blockXX] = BLOCK_INITIAL_INTEGRITY - 1;
 	}
 };
-
-Baddie.prototype._gettingPushed = function () {
-	const block = this.pushedBy;
-
-	switch (block.direction) {
-		case 'up':
-			this.sprite.x = block.sprite.x;
-			this.sprite.y = block.sprite.y - BLOCK_SIZE;
-			break;
-		case 'down':
-			this.sprite.x = block.sprite.x;
-			this.sprite.y = block.sprite.y + BLOCK_SIZE;
-			break;
-		case 'left':
-			this.sprite.x = block.sprite.x - BLOCK_SIZE;
-			this.sprite.y = block.sprite.y;
-			break;
-		case 'right':
-			this.sprite.x = block.sprite.x + BLOCK_SIZE;
-			this.sprite.y = block.sprite.y;
-			break;
-	}
-}
