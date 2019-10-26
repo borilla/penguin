@@ -19,6 +19,10 @@ const penguin = {
 	sprite: new PIXI.Sprite(),
 	facing: 'down',
 	action: 'none',
+	init: function () {
+		this.facing = 'down';
+		this.action = 'none';
+	},
 	update: function() {
 		const isOnBlock = this._canTurnHorizontal() && this._canTurnVertical();
 

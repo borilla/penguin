@@ -2,8 +2,9 @@
 
 const GAME_SIZE_X = 15;
 const GAME_SIZE_Y = 15;
-let textures;
-let gameFunction;
+let textures = {};
+let gameLoopFunction;
+let baddie = new Baddie();
 
 // create the pixi application and make it fullscreen
 const app = new PIXI.Application();
@@ -23,19 +24,21 @@ function onAssetsLoaded() {
 	penguin.initTextures(textures);
 	stationaryBlocks.initTextures(textures);
 	movingBlocks.initTextures(textures);
-	app.ticker.add(delta => gameFunction());
+	app.ticker.add(delta => gameLoopFunction());
+	app.stage.addChild(stationaryBlocks.container);
+	app.stage.addChild(movingBlocks.container);
+	app.stage.addChild(Baddie.container);
+	app.stage.addChild(penguin.sprite);
 	restartGame();
 }
 
 function restartGame() {
+	baddie.destroy();
+	baddie = new Baddie();
 	pressedKeys.clear();
 	stationaryBlocks.initBlocks();
 	movingBlocks.init();
-	penguin.facing = 'down';
-	penguin.moving = 'none'
-	app.stage.addChild(stationaryBlocks.container);
-	app.stage.addChild(movingBlocks.container);
-	app.stage.addChild(penguin.sprite);
+	penguin.init();
 	stationaryBlocks.update();
 	gameState = initGame();
 }
@@ -46,7 +49,7 @@ function initGame() {
 	const [x, y] = gridSteps[0];
 	penguin.sprite.position.set(x * 16, y * 16);
 	let currentGridStep = 0;
-	gameFunction = doNextStep;
+	gameLoopFunction = doNextStep;
 
 	function doNextStep() {
 		if (currentGridStep < gridSteps.length) {
@@ -57,7 +60,7 @@ function initGame() {
 		}
 		else {
 			// game intro has finished
-			gameFunction = playGame;
+			gameLoopFunction = playGame;
 		}
 	}
 }
@@ -78,5 +81,6 @@ function playGame() {
 	}
 	movingBlocks.update();
 	stationaryBlocks.update();
+	baddie.update();
 	penguin.update();
 }
