@@ -29,24 +29,14 @@ const penguin = {
 		if (this.action === 'push' && pressedKeys.has('Space')) {
 			// keep pushing
 		}
-		else if (pressedKeys.has('ArrowUp') && this._canTurn('up')) {
-			this.facing = 'up';
-			this.action = 'walk';
-		}
-		else if (pressedKeys.has('ArrowDown') && this._canTurn('down')) {
-			this.facing = 'down';
-			this.action = 'walk';
-		}
-		else if (pressedKeys.has('ArrowLeft') && this._canTurn('left')) {
-			this.facing = 'left';
-			this.action = 'walk';
-		}
-		else if (pressedKeys.has('ArrowRight') && this._canTurn('right')) {
-			this.facing = 'right';
-			this.action = 'walk';
-		}
-		else if (isOnBlock) {
-			this.action = 'none';
+		else {
+			if (isOnBlock) {
+				this.action = 'none';
+			}
+			pressedKeys.forEach(key => {
+				// precedence goes to last-pressed direction key (makes ui slightly nicer)
+				this._doKeyAction(key);
+			})
 		}
 
 		if (isOnBlock && pressedKeys.has('Space')) {
@@ -62,6 +52,36 @@ const penguin = {
 
 		this._setTexture();
 	},
+
+	_doKeyAction: function (key) {
+		switch (key) {
+			case 'ArrowUp': 
+				if (this._canTurn('up')) {
+					this.facing = 'up';
+					this.action = 'walk';
+				}
+				break;
+			case 'ArrowDown': 
+				if (this._canTurn('down')) {
+					this.facing = 'down';
+					this.action = 'walk';
+				}
+				break;
+			case 'ArrowLeft': 
+				if (this._canTurn('left')) {
+					this.facing = 'left';
+					this.action = 'walk';
+				}
+				break;
+			case 'ArrowRight': 
+				if (this._canTurn('right')) {
+					this.facing = 'right';
+					this.action = 'walk';
+				}
+				break;
+		}
+	},
+
 	_setTexture: function () {
 		let textureName;
 		if (this.action === 'push') {
