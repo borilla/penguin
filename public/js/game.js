@@ -5,6 +5,7 @@ const GAME_SIZE_Y = 15;
 let textures = {};
 let gameLoopFunction;
 let baddie = new Baddie();
+let frameCount = 0;
 
 // create the pixi application and make it fullscreen
 const app = new PIXI.Application();
@@ -40,7 +41,8 @@ function restartGame() {
 	movingBlocks.init();
 	penguin.init();
 	stationaryBlocks.update();
-	gameState = initGame();
+	frameCount = 0;
+	initGame();
 }
 
 function initGame() {
@@ -79,11 +81,15 @@ function playGame() {
 		restartGame();
 		return;
 	}
+
 	stationaryBlocks.update();
 	penguin.update();
 	movingBlocks.update();
 	checkForCollisions();
-	baddie.update();
+
+	if (++frameCount % 2) {
+		baddie.update();
+	}
 }
 
 function checkForCollisions() {
