@@ -3,101 +3,116 @@ const penguin = {
 	facing: 'down',
 	action: 'none',
 	frameCount: 0,
+
 	init: function () {
 		this.facing = 'down';
 		this.action = 'none';
-		this._setTexture();
+		this._updateSprite();
 	},
-	update: function() {
+
+	update: function () {
+		this._chooseAction();
+		this._doAction();
+		this._updateSprite();
+		this.frameCount++;
+	},
+
+	_chooseAction: function () {
+		// if stunned then have to wait until not stunned any more
 		if (this.action === 'stunned') {
-			this._stunned();
+			return;
+		}
+
+		// if still holding down space after pushing then wait for release
+		if (this.action === 'pushing' && pressedKeys.has('Space')) {
 			return;
 		}
 
 		const isOnBlock = this._canTurnHorizontal() && this._canTurnVertical();
 
-		if (this.action === 'push' && pressedKeys.has('Space')) {
-			// keep pushing
-		}
-		else {
-			if (isOnBlock) {
-				this.action = 'none';
-			}
-			pressedKeys.forEach(key => {
-				// precedence goes to last-pressed direction key (makes ui slightly nicer)
-				this._doKeyAction(key);
-			})
+		// initially set action to 'none' then override with direction if pressed
+		if (isOnBlock) {
+			this.action = 'none';
 		}
 
+		// check direction keys in order they were pressed (makes ui slightly nicer)
+		pressedKeys.forEach(key => {
+			this._chooseKeyAction(key);
+		})
+
+		// if space is pressed and we can push something
 		if (isOnBlock && pressedKeys.has('Space')) {
 			if (this._hasBlock(this.facing)) {
-				this._pushBlock(this.facing);
-				this.action = 'push';
+				this.action = 'pushing';
 			}
 		}
-
-		if (this.action === 'walk' && this._canMove(this.facing)) {
-			this._move(this.facing);
-		}
-
-		this._setTexture();
 	},
 
-	_doKeyAction: function (key) {
+	_doAction: function () {
+		switch (this.action) {
+			case 'stunned':
+				this._stunned();
+				break;
+			case 'walking':
+				this._walk();
+				break;
+			case 'pushing':
+				this._push();
+				break;
+		}
+	},
+
+	_chooseKeyAction: function (key) {
 		switch (key) {
 			case 'ArrowUp': 
 				if (this._canTurn('up')) {
 					this.facing = 'up';
-					this.action = 'walk';
+					this.action = 'walking';
 				}
 				break;
 			case 'ArrowDown': 
 				if (this._canTurn('down')) {
 					this.facing = 'down';
-					this.action = 'walk';
+					this.action = 'walking';
 				}
 				break;
 			case 'ArrowLeft': 
 				if (this._canTurn('left')) {
 					this.facing = 'left';
-					this.action = 'walk';
+					this.action = 'walking';
 				}
 				break;
 			case 'ArrowRight': 
 				if (this._canTurn('right')) {
 					this.facing = 'right';
-					this.action = 'walk';
+					this.action = 'walking';
 				}
 				break;
 		}
 	},
 
 	_stunned: function () {
-		++this.frameCount;
-		if (this.frameCount === 240) {
+		if (this.frameCount === 210) {
 			this.action = 'none';
-			this.facing = 'down';
 		}
-		this._setTexture();
 	},
 
-	_setTexture: function () {
+	_updateSprite: function () {
 		let textureName;
 		switch (this.action) {
 			case 'stunned':
 				if (this.frameCount < 180) {
 					textureName = `penguin/stunned-${(this.frameCount >> 3) % 2}.png`;
 				}
-				else if (this.frameCount < 210) {
+				else {
 					textureName = `penguin/stunned-2.png`;
 				}
-				else {
-					textureName = `penguin/stunned-3.png`;
-				}
 				break;
-			case 'push':
-				textureName = `penguin/${this.action}-${this.facing}.png`;
+
+			case 'pushing':
+				textureName = `penguin/push-${this.facing}.png`;
 				break;
+
 			default:
 				textureName = `penguin/walk-${this.facing}-${(this.sprite.position.x >> 3) % 2 + (this.sprite.position.y >> 3) % 2}.png`;
 				break;
@@ -105,13 +120,14 @@ const penguin = {
 
 		this.sprite.texture = textures[textureName];
 	},
+
 	_hasBlock: function (direction) {
 		if (!this._canTurnVertical() || !this._canTurnHorizontal()) {
 			return false;
 		}
 		const position = this.sprite.position;
-		const blockX = position.x >> 4; // divide by 16
-		const blockY = position.y >> 4;
+		const blockX = position.x / BLOCK_SIZE;
+		const blockY = position.y / BLOCK_SIZE;
 		switch (direction) {
 			case 'up':
 				return stationaryBlocks.blocks[blockY - 1][blockX];
@@ -125,11 +141,12 @@ const penguin = {
 				return false;
 		}
 	},
-	_pushBlock: function (direction) {
+
+	_push: function () {
 		const position = this.sprite.position;
-		let blockX = blockXX = position.x >> 4; // divide by 16
-		let blockY = blockYY = position.y >> 4;
-		switch (direction) {
+		let blockX = blockXX = position.x / BLOCK_SIZE;
+		let blockY = blockYY = position.y / BLOCK_SIZE;
+		switch (this.facing) {
 			case 'up':
 				blockY -= 1;
 				blockYY -= 2;
@@ -153,7 +170,6 @@ const penguin = {
 			blockY < 1 || blockY >= GAME_SIZE_Y - 1;
 
 		if (isEdge) {
-			this.action = 'push';
 			return false;
 		}
 
@@ -163,16 +179,13 @@ const penguin = {
 			this.action = 'none';
 			return false;
 		}
-
 		if (stationaryBlocks.blocks[blockYY][blockXX]) {
 			if (stationaryBlocks.blocks[blockY][blockX] === BLOCK_INITIAL_INTEGRITY) {
 				stationaryBlocks.blocks[blockY][blockX] = BLOCK_INITIAL_INTEGRITY - 1;
 			}
-			this.action = 'push';
 		}
 		else {
-			movingBlocks.add(blockX, blockY, direction);
-			this.action = 'push';
+			movingBlocks.add(blockX, blockY, this.facing);
 		}
 
 		return true;
@@ -195,11 +208,17 @@ const penguin = {
 	_canTurnHorizontal: function () {
 		return this.sprite.position.y % 16 === 0;
 	},
-	_canMove: function (direction) {
-		return this._canTurn(direction) && !this._hasBlock(direction);
+
+	_canWalk: function (direction) {
+		return this._canTurn(direction) && !this._hasBlock(direction)
 	},
-	_move: function (direction) {
-		switch (direction) {
+
+	_walk: function () {
+		if (!this._canWalk(this.facing)) {
+			return false;
+		}
+
+		switch (this.facing) {
 			case 'up':
 				this.sprite.position.y -= 1;
 				break;
@@ -215,5 +234,6 @@ const penguin = {
 			default:
 				return false;
 		}
+		return true;
 	}
 };
