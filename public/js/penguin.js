@@ -176,9 +176,9 @@ const penguin = {
 		const hasBlock = stationaryBlocks.blocks[blockY][blockX];
 
 		if (!hasBlock) {
-			this.action = 'none';
 			return false;
 		}
+
 		if (stationaryBlocks.blocks[blockYY][blockXX]) {
 			if (stationaryBlocks.blocks[blockY][blockX] === BLOCK_INITIAL_INTEGRITY) {
 				stationaryBlocks.blocks[blockY][blockX] = BLOCK_INITIAL_INTEGRITY - 1;
