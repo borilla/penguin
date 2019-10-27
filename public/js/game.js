@@ -2,9 +2,10 @@
 
 const GAME_SIZE_X = 15;
 const GAME_SIZE_Y = 15;
+const BADDIE_COUNT = 4; 
 let textures = {};
 let gameLoopFunction;
-let baddie = null;
+let baddies = new Set();
 let frameCount = 0;
 
 // create the pixi application and make it fullscreen
@@ -22,7 +23,6 @@ PIXI.Loader.shared.add('img/sprites.json').load(onAssetsLoaded);
 
 function onAssetsLoaded() {
 	textures = PIXI.Loader.shared.resources['img/sprites.json'].textures;
-	penguin.initTextures(textures);
 	stationaryBlocks.initTextures(textures);
 	movingBlocks.initTextures(textures);
 	app.ticker.add(delta => gameLoopFunction());
@@ -38,7 +38,7 @@ function restartGame() {
 	stationaryBlocks.initBlocks();
 	movingBlocks.init();
 	penguin.init();
-	respawnBaddie();
+	destroyBaddies();
 	stationaryBlocks.update();
 	frameCount = 0;
 	initGame();
@@ -86,34 +86,56 @@ function playGame() {
 	movingBlocks.update();
 	checkForCollisions();
 
+	if (baddies.size < BADDIE_COUNT) {
+		spawnBaddie();
+	}
+
 	if (++frameCount % 2) {
-		baddie.update();
+		baddies.forEach(baddie => baddie.update());
 	}
 }
 
 function checkForCollisions() {
 	movingBlocks.blocks.forEach(block => {
-		if (isCollision(block.sprite, baddie.sprite)) {
-			baddie.action = 'getting-pushed';
-			block.isPushing.push(baddie);
-		}
+		baddies.forEach(baddie => {
+			if (isCollision(block.sprite, baddie.sprite)) {
+				baddie.action = 'getting-pushed';
+				block.isPushing.push(baddie);
+			}
+		})
 	});
 
 	if (penguin.action !== 'stunned') {
-		if (isCollision(baddie.sprite, penguin.sprite)) {
-			penguin.action = 'stunned';
-			penguin.frameCount = 0;
-			pressedKeys.clear();
-		}
+		baddies.forEach(baddie => {
+			if (isCollision(baddie.sprite, penguin.sprite)) {
+				penguin.action = 'stunned';
+				penguin.frameCount = 0;
+				pressedKeys.clear();
+			}
+		});
 	}
 }
 
-function respawnBaddie() {
-	if (baddie) {
-		baddie.destroy();
-	}
+function destroyBaddies() {
+	baddies.forEach(baddie => destroyBaddie(baddie));
+}
+
+function respawnBaddie(baddie) {
+	destroyBaddie();
+	spawnBaddie();
+}
+
+function destroyBaddie(baddie) {
+	baddie.destroy();
+	baddies.delete(baddie);
+}
+
+function spawnBaddie() {
 	const block = chooseRandomBlock();
-	baddie = new Baddie(block.x, block.y);
+	if (block) {
+		baddie = new Baddie(block.x, block.y);
+		baddies.add(baddie);
+	}
 }
 
 function chooseRandomBlock() {

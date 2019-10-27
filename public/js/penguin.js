@@ -1,21 +1,4 @@
 const penguin = {
-	textures: {},
-	initTextures: function(textures) {
-		this.textures = {
-			'push-down': textures['penguin/push-down.png'],
-			'push-left': textures['penguin/push-left.png'],
-			'push-right': textures['penguin/push-right.png'],
-			'push-up': textures['penguin/push-up.png'],
-			'walk-down-0': textures['penguin/walk-down-0.png'],
-			'walk-down-1': textures['penguin/walk-down-1.png'],
-			'walk-left-0': textures['penguin/walk-left-1.png'],
-			'walk-left-1': textures['penguin/walk-left-0.png'],
-			'walk-right-0': textures['penguin/walk-right-1.png'],
-			'walk-right-1': textures['penguin/walk-right-0.png'],
-			'walk-up-0': textures['penguin/walk-up-0.png'],
-			'walk-up-1': textures['penguin/walk-up-1.png'],
-		};
-	},
 	sprite: new PIXI.Sprite(),
 	facing: 'down',
 	action: 'none',
@@ -23,6 +6,7 @@ const penguin = {
 	init: function () {
 		this.facing = 'down';
 		this.action = 'none';
+		this._setTexture();
 	},
 	update: function() {
 		if (this.action === 'stunned') {
