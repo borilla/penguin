@@ -1,4 +1,5 @@
-const BLOCK_INITIAL_INTEGRITY = 18;
+const BLOCK_CRUSH_SPEED = 3;
+const BLOCK_INITIAL_INTEGRITY = BLOCK_CRUSH_SPEED * 9;
 const BLOCK_SIZE = 16;
 const BLOCK_PUSH_SPEED = 4;
 
@@ -34,7 +35,7 @@ const stationaryBlocks = {
 			for (let x = 0; x < GAME_SIZE_X; ++x) {
 				const blockIntegrity = blocks[y][x];
 				if (blockIntegrity) {
-					const texture = `block-${blockIntegrity >> 1}`;
+					const texture = `block-${Math.ceil(blockIntegrity / BLOCK_CRUSH_SPEED)}`;
 					const blockSprite = new PIXI.Sprite(this.textures[texture]);
 					blockSprite.position.x = x * 16;
 					blockSprite.position.y = y * 16;

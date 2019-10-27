@@ -19,11 +19,17 @@ const penguin = {
 	sprite: new PIXI.Sprite(),
 	facing: 'down',
 	action: 'none',
+	frameCount: 0,
 	init: function () {
 		this.facing = 'down';
 		this.action = 'none';
 	},
 	update: function() {
+		if (this.action === 'stunned') {
+			this._stunned();
+			return;
+		}
+
 		const isOnBlock = this._canTurnHorizontal() && this._canTurnVertical();
 
 		if (this.action === 'push' && pressedKeys.has('Space')) {
@@ -82,15 +88,38 @@ const penguin = {
 		}
 	},
 
+	_stunned: function () {
+		++this.frameCount;
+		if (this.frameCount === 240) {
+			this.action = 'none';
+			this.facing = 'down';
+		}
+		this._setTexture();
+	},
+
 	_setTexture: function () {
 		let textureName;
-		if (this.action === 'push') {
-			textureName = `${this.action}-${this.facing}`;
+		switch (this.action) {
+			case 'stunned':
+				if (this.frameCount < 180) {
+					textureName = `penguin/stunned-${(this.frameCount >> 3) % 2}.png`;
+				}
+				else if (this.frameCount < 210) {
+					textureName = `penguin/stunned-2.png`;
+				}
+				else {
+					textureName = `penguin/stunned-3.png`;
+				}
+				break;
+			case 'push':
+				textureName = `penguin/${this.action}-${this.facing}.png`;
+				break;
+			default:
+				textureName = `penguin/walk-${this.facing}-${(this.sprite.position.x >> 3) % 2 + (this.sprite.position.y >> 3) % 2}.png`;
+				break;
 		}
-		else {
-			textureName = `walk-${this.facing}-${(this.sprite.position.x >> 3) % 2 + (this.sprite.position.y >> 3) % 2}`;
-		}
-		this.sprite.texture = this.textures[textureName];
+
+		this.sprite.texture = textures[textureName];
 	},
 	_hasBlock: function (direction) {
 		if (!this._canTurnVertical() || !this._canTurnHorizontal()) {

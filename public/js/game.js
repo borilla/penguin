@@ -98,6 +98,14 @@ function checkForCollisions() {
 			block.isPushing.push(baddie);
 		}
 	});
+
+	if (penguin.action !== 'stunned') {
+		if (isCollision(baddie.sprite, penguin.sprite)) {
+			penguin.action = 'stunned';
+			penguin.frameCount = 0;
+			pressedKeys.clear();
+		}
+	}
 }
 
 function respawnBaddie() {
