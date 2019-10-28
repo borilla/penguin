@@ -92,6 +92,14 @@ const penguin = {
 	},
 
 	_stunned: function () {
+		if (this.frameCount === 0) {
+			// move to nearest block
+			const nearestBlockX = Math.floor((this.sprite.x + BLOCK_SIZE / 2) / BLOCK_SIZE);
+			const nearestBlockY = Math.floor((this.sprite.y + BLOCK_SIZE / 2) / BLOCK_SIZE);
+			this.sprite.x = nearestBlockX * BLOCK_SIZE;
+			this.sprite.y = nearestBlockY * BLOCK_SIZE;
+		}
+
 		if (this.frameCount === 210) {
 			this.action = 'none';
 		}
