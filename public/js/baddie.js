@@ -2,16 +2,17 @@ function Baddie(blockX = 1, blockY = 1) {
 	this.sprite = new PIXI.Sprite();
 	this.sprite.x = blockX * BLOCK_SIZE;
 	this.sprite.y = blockY * BLOCK_SIZE;
+	Baddie.container.addChild(this.sprite);
 	this.direction = 'down';
 	this.action = 'hatching';
 	this.frameCount = 0;
-	Baddie.container.addChild(this.sprite);
 	if (stationaryBlocks.blocks.length) {
 		stationaryBlocks.blocks[blockY][blockX] = BLOCK_INITIAL_INTEGRITY - 1;
 	}
 }
 
 Baddie.container = new PIXI.Container();
+Baddie.container.position.set(-1, -1);
 
 Baddie.prototype.destroy = function () {
 	Baddie.container.removeChild(this.sprite);

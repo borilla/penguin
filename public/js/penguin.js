@@ -1,4 +1,5 @@
 const penguin = {
+	container: new PIXI.Container(),
 	sprite: new PIXI.Sprite(),
 	facing: 'down',
 	action: 'none',
@@ -245,3 +246,6 @@ const penguin = {
 		return true;
 	}
 };
+
+penguin.container.position.set(-1, -1);
+penguin.container.addChild(penguin.sprite);

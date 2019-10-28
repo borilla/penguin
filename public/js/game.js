@@ -28,7 +28,7 @@ function onAssetsLoaded() {
 	app.ticker.add(delta => gameLoopFunction());
 	app.stage.addChild(movingBlocks.container);
 	app.stage.addChild(Baddie.container);
-	app.stage.addChild(penguin.sprite);
+	app.stage.addChild(penguin.container);
 	app.stage.addChild(stationaryBlocks.container);
 	restartGame();
 }
