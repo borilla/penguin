@@ -120,7 +120,10 @@ const movingBlocks = {
 			stationaryBlocks.blocks[blockY][blockX] = BLOCK_INITIAL_INTEGRITY;
 			this.container.removeChild(block.sprite);
 			this.blocks.delete(block);
-			block.isPushing.forEach(victim => { destroyBaddie(victim) });
+			block.isPushing.forEach(victim => {
+				destroyBaddie(victim);
+				sounds.pop.play();
+			});
 		}
 	},
 };

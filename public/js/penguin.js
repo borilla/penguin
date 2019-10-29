@@ -174,7 +174,7 @@ const penguin = {
 				break;
 		}
 
-		const isEdge = 
+		const isEdge =
 			blockX < 1 || blockX >= GAME_SIZE_X - 1 ||
 			blockY < 1 || blockY >= GAME_SIZE_Y - 1;
 
@@ -191,6 +191,7 @@ const penguin = {
 		if (stationaryBlocks.blocks[blockYY][blockXX]) {
 			if (stationaryBlocks.blocks[blockY][blockX] === BLOCK_INITIAL_INTEGRITY) {
 				stationaryBlocks.blocks[blockY][blockX] = BLOCK_INITIAL_INTEGRITY - 1;
+				sounds.crush.play();
 			}
 		}
 		else {

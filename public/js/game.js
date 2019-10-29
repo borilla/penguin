@@ -4,6 +4,7 @@ const GAME_SIZE_X = 15;
 const GAME_SIZE_Y = 15;
 const BADDIE_COUNT = 4; 
 let textures = {};
+let sounds = {};
 let gameLoopFunction;
 let baddies = new Set();
 let frameCount = 0;
@@ -18,11 +19,20 @@ app.renderer.resize(GAME_SIZE_X * 16, GAME_SIZE_Y * 16);
 // add pixi canvas to html document
 document.body.appendChild(app.view);
 
-// load images and run the `setup` function when it's done
-PIXI.Loader.shared.add('img/sprites.json').load(onAssetsLoaded);
+// load resources
+PIXI.Loader.shared
+	.add('sprites', 'img/sprites.json')
+	.add('crush', 'sound/crush.mp3')
+	.add('pop', 'sound/pop.mp3')
+	.load(onAssetsLoaded);
 
-function onAssetsLoaded() {
-	textures = PIXI.Loader.shared.resources['img/sprites.json'].textures;
+function onAssetsLoaded(loader, resources) {
+	textures = resources.sprites.textures;
+	sounds = {
+		crush: resources.crush.sound,
+		pop: resources.pop.sound,
+	};
+	sounds.crush.volume = .2;
 	stationaryBlocks.initTextures(textures);
 	movingBlocks.initTextures(textures);
 	app.ticker.add(delta => gameLoopFunction());
