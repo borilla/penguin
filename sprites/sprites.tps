@@ -181,6 +181,29 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">baddie/hatch-0.png</key>
+            <key type="filename">baddie/hatch-1.png</key>
+            <key type="filename">baddie/hatch-10.png</key>
+            <key type="filename">baddie/hatch-11.png</key>
+            <key type="filename">baddie/hatch-2.png</key>
+            <key type="filename">baddie/hatch-3.png</key>
+            <key type="filename">baddie/hatch-4.png</key>
+            <key type="filename">baddie/hatch-5.png</key>
+            <key type="filename">baddie/hatch-6.png</key>
+            <key type="filename">baddie/hatch-7.png</key>
+            <key type="filename">baddie/hatch-8.png</key>
+            <key type="filename">baddie/hatch-9.png</key>
+            <key type="filename">baddie/push-down.png</key>
+            <key type="filename">baddie/push-right.png</key>
+            <key type="filename">baddie/push-up.png</key>
+            <key type="filename">baddie/walk-down-0.png</key>
+            <key type="filename">baddie/walk-down-1.png</key>
+            <key type="filename">baddie/walk-left-0.png</key>
+            <key type="filename">baddie/walk-left-1.png</key>
+            <key type="filename">baddie/walk-right-0.png</key>
+            <key type="filename">baddie/walk-right-1.png</key>
+            <key type="filename">baddie/walk-up-0.png</key>
+            <key type="filename">baddie/walk-up-1.png</key>
             <key type="filename">block/block-1.png</key>
             <key type="filename">block/block-2.png</key>
             <key type="filename">block/block-3.png</key>
@@ -190,14 +213,13 @@
             <key type="filename">block/block-7.png</key>
             <key type="filename">block/block-8.png</key>
             <key type="filename">block/block-9.png</key>
-            <key type="filename">penguin/push-down-0.png</key>
-            <key type="filename">penguin/push-down-1.png</key>
-            <key type="filename">penguin/push-left-0.png</key>
-            <key type="filename">penguin/push-left-1.png</key>
-            <key type="filename">penguin/push-right-0.png</key>
-            <key type="filename">penguin/push-right-1.png</key>
-            <key type="filename">penguin/push-up-0.png</key>
-            <key type="filename">penguin/push-up-1.png</key>
+            <key type="filename">penguin/push-down.png</key>
+            <key type="filename">penguin/push-left.png</key>
+            <key type="filename">penguin/push-right.png</key>
+            <key type="filename">penguin/push-up.png</key>
+            <key type="filename">penguin/stunned-0.png</key>
+            <key type="filename">penguin/stunned-1.png</key>
+            <key type="filename">penguin/stunned-2.png</key>
             <key type="filename">penguin/walk-down-0.png</key>
             <key type="filename">penguin/walk-down-1.png</key>
             <key type="filename">penguin/walk-left-0.png</key>
@@ -217,6 +239,36 @@
                 <rect>4,4,8,8</rect>
                 <key>scale9Paddings</key>
                 <rect>4,4,8,8</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">baddie/push-left.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,4,9,8</rect>
+                <key>scale9Paddings</key>
+                <rect>4,4,9,8</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">block/edge-tile.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>2,2,4,4</rect>
+                <key>scale9Paddings</key>
+                <rect>2,2,4,4</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
