@@ -6,9 +6,9 @@ const BLOCK_PUSH_SPEED = 4;
 const stationaryBlocks = {
 	blocks: [],
 	initBlocks: function () {
-		this.blocks = (new Array(GAME_SIZE_Y)).fill(null);
+		this.blocks = (new Array(GRID_SIZE_Y)).fill(null);
 		this.blocks.forEach((row, index) => {
-			this.blocks[index] = (new Array(GAME_SIZE_X).fill(BLOCK_INITIAL_INTEGRITY));
+			this.blocks[index] = (new Array(GRID_SIZE_X).fill(BLOCK_INITIAL_INTEGRITY));
 		});
 	},
 	container: new PIXI.Container(),
@@ -17,15 +17,15 @@ const stationaryBlocks = {
 		const blocks = this.blocks;
 		container.removeChildren();
 
-		for (let y = 0; y < GAME_SIZE_Y; ++y) {
-			for (let x = 0; x < GAME_SIZE_X; ++x) {
+		for (let y = 0; y < GRID_SIZE_Y; ++y) {
+			for (let x = 0; x < GRID_SIZE_X; ++x) {
 				const blockIntegrity = blocks[y][x];
 				if (blockIntegrity) {
 					const textureName = `block/block-${Math.ceil(blockIntegrity / BLOCK_CRUSH_SPEED)}.png`;
 					const blockSprite = new PIXI.Sprite(textures[textureName]);
 					const texture = `block-${Math.ceil(blockIntegrity / BLOCK_CRUSH_SPEED)}`;
-					blockSprite.position.x = x * 16;
-					blockSprite.position.y = y * 16;
+					blockSprite.position.x = x * BLOCK_SIZE;
+					blockSprite.position.y = y * BLOCK_SIZE;
 					container.addChild(blockSprite);
 					if (blockIntegrity < BLOCK_INITIAL_INTEGRITY) {
 						blocks[y][x] = blockIntegrity - 1;

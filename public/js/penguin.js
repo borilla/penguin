@@ -24,7 +24,7 @@ const penguin = {
 			return;
 		}
 
-		// if still holding down space after pushing then wait for release
+		// if still holding down space after pushing a block then wait for release
 		if (this.action === 'pushing' && pressedKeys.has('Space')) {
 			return;
 		}
@@ -175,8 +175,8 @@ const penguin = {
 		}
 
 		const isEdge =
-			blockX < 1 || blockX >= GAME_SIZE_X - 1 ||
-			blockY < 1 || blockY >= GAME_SIZE_Y - 1;
+			blockX < 1 || blockX >= GRID_SIZE_X - 1 ||
+			blockY < 1 || blockY >= GRID_SIZE_Y - 1;
 
 		if (isEdge) {
 			return false;

@@ -122,7 +122,7 @@ Baddie._blockNeighbour = function (blockX, blockY, direction) {
 	}
 
 	// out of bounds
-	if (blockXX < 1 || blockXX >= GAME_SIZE_X - 1 || blockYY < 1 || blockYY >= GAME_SIZE_Y - 1) {
+	if (blockXX < 1 || blockXX >= GRID_SIZE_X - 1 || blockYY < 1 || blockYY >= GRID_SIZE_Y - 1) {
 		return null;
 	}
 

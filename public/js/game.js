@@ -1,7 +1,11 @@
 // Tutorial: https://github.com/kittykatattack/learningPixi
 
-const GAME_SIZE_X = 15;
-const GAME_SIZE_Y = 15;
+const MAZE_SIZE_X = 7;
+const MAZE_SIZE_Y = 7;
+const GRID_SIZE_X = MAZE_SIZE_X * 2 + 1;
+const GRID_SIZE_Y = MAZE_SIZE_Y * 2 + 1;
+const SCREEN_SIZE_X = GRID_SIZE_X * BLOCK_SIZE;
+const SCREEN_SIZE_Y = GRID_SIZE_Y * BLOCK_SIZE;
 const BADDIE_COUNT = 4; 
 let textures = {};
 let sounds = {};
@@ -14,7 +18,7 @@ const app = new PIXI.Application();
 app.renderer.backgroundColor = 0x000000;
 app.renderer.view.style.position = 'absolute';
 app.renderer.view.style.display = 'block';
-app.renderer.resize(GAME_SIZE_X * 16, GAME_SIZE_Y * 16);
+app.renderer.resize(GRID_SIZE_X * BLOCK_SIZE, GRID_SIZE_Y * BLOCK_SIZE);
 
 // add pixi canvas to html document
 document.body.appendChild(app.view);
@@ -148,8 +152,8 @@ function spawnBaddie() {
 
 function chooseRandomBlock() {
 	const blocks = [];
-	for (let x = 1; x < GAME_SIZE_X - 1; ++x) {
-		for (let y = 1; y < GAME_SIZE_Y - 1; ++y) {
+	for (let x = 1; x < GRID_SIZE_X - 1; ++x) {
+		for (let y = 1; y < GRID_SIZE_Y - 1; ++y) {
 			if (stationaryBlocks.blocks[y][x] === BLOCK_INITIAL_INTEGRITY) {
 				blocks.push({x, y});
 			}
