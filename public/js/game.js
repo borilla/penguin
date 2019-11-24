@@ -33,8 +33,6 @@ function onAssetsLoaded(loader, resources) {
 		pop: resources.pop.sound,
 	};
 	sounds.crush.volume = .2;
-	stationaryBlocks.initTextures(textures);
-	movingBlocks.initTextures(textures);
 	app.ticker.add(delta => gameLoopFunction());
 	app.stage.addChild(movingBlocks.container);
 	app.stage.addChild(Baddie.container);

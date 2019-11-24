@@ -11,20 +11,6 @@ const stationaryBlocks = {
 			this.blocks[index] = (new Array(GAME_SIZE_X).fill(BLOCK_INITIAL_INTEGRITY));
 		});
 	},
-	textures: {},
-	initTextures: function (textures) {
-		this.textures = {
-			'block-9': textures['block/block-9.png'],
-			'block-8': textures['block/block-8.png'],
-			'block-7': textures['block/block-7.png'],
-			'block-6': textures['block/block-6.png'],
-			'block-5': textures['block/block-5.png'],
-			'block-4': textures['block/block-4.png'],
-			'block-3': textures['block/block-3.png'],
-			'block-2': textures['block/block-2.png'],
-			'block-1': textures['block/block-1.png'],
-		};
-	},
 	container: new PIXI.Container(),
 	update: function () {
 		const container = this.container;
@@ -35,8 +21,9 @@ const stationaryBlocks = {
 			for (let x = 0; x < GAME_SIZE_X; ++x) {
 				const blockIntegrity = blocks[y][x];
 				if (blockIntegrity) {
+					const textureName = `block/block-${Math.ceil(blockIntegrity / BLOCK_CRUSH_SPEED)}.png`;
+					const blockSprite = new PIXI.Sprite(textures[textureName]);
 					const texture = `block-${Math.ceil(blockIntegrity / BLOCK_CRUSH_SPEED)}`;
-					const blockSprite = new PIXI.Sprite(this.textures[texture]);
 					blockSprite.position.x = x * 16;
 					blockSprite.position.y = y * 16;
 					container.addChild(blockSprite);
@@ -52,17 +39,11 @@ const stationaryBlocks = {
 const movingBlocks = {
 	blocks: new Set(),
 	container: new PIXI.Container(),
-	textures: {},
-	initTextures: function (textures) {
-		this.textures = {
-			'block': textures['block/block-9.png'],
-		};
-	},
 	init: function () {
 		blocks = new Set();
 	},
 	add: function (blockX, blockY, direction) {
-		const sprite = new PIXI.Sprite(this.textures.block);
+		const sprite = new PIXI.Sprite(textures['block/block-9.png']);
 		sprite.position.x = blockX * BLOCK_SIZE;
 		sprite.position.y = blockY * BLOCK_SIZE;
 		this.container.addChild(sprite);
