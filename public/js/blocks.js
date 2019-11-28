@@ -103,8 +103,17 @@ const movingBlocks = {
 			this.blocks.delete(block);
 			block.isPushing.forEach(victim => {
 				destroyBaddie(victim);
-				sounds.pop.play();
 			});
+			playPops(block.isPushing.length);
 		}
 	},
 };
+
+function playPops(count) {
+	if (count) {
+		sounds.pop.play();
+		if (count > 1) {
+			setTimeout(() => playPops(count - 1), 50);
+		}
+	}
+}

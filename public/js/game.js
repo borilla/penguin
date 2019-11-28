@@ -27,6 +27,7 @@ document.body.appendChild(app.view);
 PIXI.Loader.shared
 	.add('sprites', 'img/sprites.json')
 	.add('crush', 'sound/crush.mp3')
+	.add('cry', 'sound/cry.mp3')
 	.add('pop', 'sound/pop.mp3')
 	.load(onAssetsLoaded);
 
@@ -34,6 +35,7 @@ function onAssetsLoaded(loader, resources) {
 	textures = resources.sprites.textures;
 	sounds = {
 		crush: resources.crush.sound,
+		cry: resources.cry.sound,
 		pop: resources.pop.sound,
 	};
 	sounds.crush.volume = .2;
@@ -123,6 +125,7 @@ function checkForCollisions() {
 				penguin.action = 'stunned';
 				penguin.frameCount = 0;
 				pressedKeys.clear();
+				sounds.cry.play();
 			}
 		});
 	}
