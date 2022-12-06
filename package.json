@@ -10,6 +10,6 @@
 	"author": "borilla",
 	"license": "MIT",
 	"devDependencies": {
-		"http-server": "^0.9.0"
+		"http-server": "^14.1.1"
 	}
 }
