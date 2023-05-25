@@ -40,3 +40,4 @@ Open the application on localhost: http://127.0.0.1:8080
 ## Thanks
 
 This tutorial was super-useful for getting started with pixijs: https://github.com/kittykatattack/learningPixi
+
