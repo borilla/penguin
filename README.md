@@ -16,7 +16,7 @@ Install required modules
 
 ```sh
 cd penguin
-npm intall
+npm install
 ```
 
 Start the local HTTP server
@@ -35,7 +35,7 @@ Open the application on localhost: http://127.0.0.1:8080
 
 ## Why don't the baddies kill me?
 
-Rome wasn't built in a day
+~~Rome wasn't built in a day~~ You will be temporarily stunned if a baddy touches you
 
 ## Thanks
 
